@@ -680,5 +680,8 @@ adni_gene_expression_subjectInfo_allInfo %>% head
 write.csv(adni_gene_expression_subjectInfo_allInfo, file = "20230215_adni_gene_expression_subjectInfo_Dx.csv")
 ```
 
+```{r}
+sessionInfo()
+```
 
 

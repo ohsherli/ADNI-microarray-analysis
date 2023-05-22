@@ -1,6 +1,6 @@
 ---
 title: "20230130 cleaning up ADNI raw data"
-output: html_notebook
+output: github_document
 ---
 
 ```{r setup}
@@ -386,6 +386,10 @@ APGEN2	APOEGO2	ADNI GO & 2 APOE Genotypes	-4	Genotype - Allele 2
 save.image(file = "20230201_workspace_cleaning_adni.Rdata")
 ```
 
+
+```{r}
+sessionInfo()
+```
 
 
 

@@ -1,7 +1,8 @@
 ---
 title: "Exploring cleaned ADNI data"
-output: html_notebook
+output: github_document
 ---
+
 
 ```{r setup}
 library(tidyverse)
@@ -908,6 +909,10 @@ PCA_ADNI_allGenes_MMSE.title <- plot_grid(
 PCA_ADNI_allGenes_MMSE.title
 ```
 
+
+```{r}
+sessionInfo()
+```
 
 
 
