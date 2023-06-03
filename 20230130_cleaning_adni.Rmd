@@ -28,14 +28,21 @@ library(plotly)
 library(cowplot)
 
 library(limma)
+
+# install.packages("here")
+library(here)
+
+knitr::opts_knit$set(root.dir = "~/Desktop/NTU/EG_Lab/Jan2023_ADNI_analysis")
 ```
+
+
 
 Reading in files:
 
 ```{r}
 ## main gene expression file
 adni_gene_expression_raw <- read.csv("../data/ADNI_raw_files/ADNI_Gene_Expression_Profile/ADNI_Gene_Expression_Profile.csv", header = FALSE)
-adni_gene_expression_raw %>% head
+# adni_gene_expression_raw %>% head
 adni_gene_expression_raw[9:15,1:10]
 ```
 
@@ -57,7 +64,7 @@ adni_gene_expression_subjectInfo$Phase <- factor(adni_gene_expression_subjectInf
 adni_gene_expression_subjectInfo$Affy.Plate <- factor(adni_gene_expression_subjectInfo$Affy.Plate)
 adni_gene_expression_subjectInfo$YearofCollection <- factor(adni_gene_expression_subjectInfo$YearofCollection)
 
-adni_gene_expression_subjectInfo %>% head
+# adni_gene_expression_subjectInfo %>% head
 ```
 
 
@@ -69,14 +76,14 @@ adni_gene_expression_values <- adni_gene_expression_raw[9:nrow(adni_gene_express
 colnames(adni_gene_expression_values) <- c("ProbeSet", "LocusLink", "Symbol", 
                                            c(paste0("subject_", 1:(ncol(adni_gene_expression_values)-4))),
                                            "geneInfo")
-adni_gene_expression_values[(ncol(adni_gene_expression_values)-5):ncol(adni_gene_expression_values)]
+# adni_gene_expression_values[(ncol(adni_gene_expression_values)-5):ncol(adni_gene_expression_values)]
 
 # remove first row (column headings already added)
 adni_gene_expression_values <- adni_gene_expression_values[2:nrow(adni_gene_expression_values), ]
 
 # change microarray values to all numeric
 adni_gene_expression_values[,4:(ncol(adni_gene_expression_values)-1)] <- lapply(adni_gene_expression_values[,4:(ncol(adni_gene_expression_values)-1)], as.numeric)
-adni_gene_expression_values %>% head(20)
+# adni_gene_expression_values %>% head(20)
 
 # fix gene name for SEPT2
 which(adni_gene_expression_values$Symbol == "2-Sep")
@@ -97,21 +104,21 @@ rownames(adni_gene_expression_values) <- adni_gene_expression_values$ProbeSet
 adni_gene_expression_values <- adni_gene_expression_values[,c(2:ncol(adni_gene_expression_values))] %>% 
   t %>%
   as.data.frame()
-adni_gene_expression_values %>% head
+# adni_gene_expression_values %>% head
 adni_gene_expression_values %>% nrow # 744
 
-save(adni_gene_expression_values, file = "adni_gene_expression_values.RData")
+# save(adni_gene_expression_values, file = "adni_gene_expression_values.RData")
 ```
 
 
 ```{r}
 # import diagnosis data
 diagnosis_info <- read.csv("~/Desktop/NTU/EG_Lab/data/ADNI_raw_files/Diagnosis/DXSUM_PDXCONV_ADNIALL.csv")
-diagnosis_info %>% head
+# diagnosis_info %>% head
 
 diagnosis_info.split_phase <- diagnosis_info %>% split(diagnosis_info$Phase)
-diagnosis_info.split_phase$ADNIGO %>% head()
-diagnosis_info.split_phase$ADNI2
+# diagnosis_info.split_phase$ADNIGO %>% head()
+# diagnosis_info.split_phase$ADNI2
 ```
 
 ADNI2:
@@ -145,10 +152,10 @@ DXSUM	Diagnostic Summary	1.  Which best describes the participant's change in co
 
 
 ```{r}
-adni_gene_expression_subjectInfo %>% head
+# adni_gene_expression_subjectInfo %>% head
 adni_gene_expression_subjectInfo.split_phase <- adni_gene_expression_subjectInfo %>% 
   split(adni_gene_expression_subjectInfo$Phase)
-adni_gene_expression_subjectInfo.split_phase
+# adni_gene_expression_subjectInfo.split_phase
 ```
 
 
@@ -248,7 +255,7 @@ gene_expression_adni2_diagnosis_values %>% table
 #   1   2   3   5 
 # 171 212  61   5 
 
-gene_expression_adni2_diagnosis_values %>% head
+# gene_expression_adni2_diagnosis_values %>% head
 ```
 
 
@@ -257,7 +264,7 @@ gene_expression_adni2_diagnosis_values %>% head
 adni2_diagnosis_subjectInfo <- adni_gene_expression_subjectInfo.split_phase$ADNI2 %>%
   mutate(Diagnosis = gene_expression_adni2_diagnosis_values,
          .after = "SubjectID")
-adni2_diagnosis_subjectInfo %>% head
+# adni2_diagnosis_subjectInfo %>% head
 ```
 
 
@@ -311,7 +318,7 @@ gene_expression_ADNIGO_diagnosis_values %>% table
  #  1   2   3   4   5   7   8 
  # 73 159  37  10  13   2   1 
 
-gene_expression_ADNIGO_diagnosis_values %>% head
+# gene_expression_ADNIGO_diagnosis_values %>% head
 ```
 
 
@@ -322,7 +329,7 @@ gene_expression_ADNIGO_diagnosis_values %>% head
 adnigo_diagnosis_subjectInfo <- adni_gene_expression_subjectInfo.split_phase$ADNIGO %>%
   mutate(Diagnosis = gene_expression_ADNIGO_diagnosis_values,
          .after = "SubjectID")
-adnigo_diagnosis_subjectInfo %>% head
+# adnigo_diagnosis_subjectInfo %>% head
 ```
 
 ### Combine patient info tables from ADNI2 and ADNIGO (with added diagnosis column)
@@ -335,7 +342,7 @@ adni_gene_expression_subjectInfo_Dx <- adni_gene_expression_subjectInfo_Dx[
   match(rownames(adni_gene_expression_values), 
         rownames(adni_gene_expression_subjectInfo_Dx)),]
 
-adni_gene_expression_subjectInfo_Dx %>% head
+# adni_gene_expression_subjectInfo_Dx %>% head
 
 adni_gene_expression_subjectInfo_Dx$Diagnosis %>% table
 ```
@@ -344,7 +351,7 @@ adni_gene_expression_subjectInfo_Dx$Diagnosis %>% table
 ```{r}
 ## diagnosis dictionary file
 adni_diagnosis_metadata_raw <- read.csv("../data/ADNI_raw_files/Diagnosis/DXSUM_PDXCONV_ADNIALL.csv")
-adni_diagnosis_metadata_raw %>% head(10)
+# adni_diagnosis_metadata_raw %>% head(10)
 ```
 
 ```{r}
@@ -353,29 +360,16 @@ write.csv(adni_gene_expression_subjectInfo_Dx, file = "20230201_adni_gene_expres
 ```
 
 
-```{r}
-(adni_diagnosis_metadata_raw %>% split(adni_diagnosis_metadata_raw$PTID))[[1]]
-```
-
 
 ## Compiling further patient information (age, sex, MMSE scores)
 
 ```{r}
-# import csv for age
-ADNI_mRNA_Age <- read.csv("~/Desktop/NTU/EG_Lab/data/ADNI_raw_files/ADNI_mRNA_Age.csv")
-ADNI_mRNA_Age %>% head
-
-# import csv for gender
-ADNIMERGE <- read.csv("~/Desktop/NTU/EG_Lab/data/ADNI_raw_files/Data___Database/ADNIMERGE.csv")
-
-# import csv for MMSE scores
-
-
-# import csv for APOE genotyping
-APOERES <- read.csv("~/Desktop/NTU/EG_Lab/data/ADNI_raw_files/Biospecimen_Results/APOERES.csv")
+ADNIMERGE <- read.csv("/Users/ohsherli/Desktop/NTU/EG_Lab/data/ADNI_raw_files/Data___Database/ADNIMERGE.csv")
+APOERES <- read.csv("/Users/ohsherli/Desktop/NTU/EG_Lab/data/ADNI_raw_files/APOERES.csv")
+ADNI_mRNA_Age <- read.csv("/Users/ohsherli/Desktop/NTU/EG_Lab/data/ADNI_raw_files/ADNI_mRNA_Age.csv")
 ```
 
-**From **
+
 
 **From APOERES_DICT:**
 APGEN1	APOEGO2	ADNI GO & 2 APOE Genotypes	-4	Genotype - Allele 1
@@ -383,7 +377,7 @@ APGEN2	APOEGO2	ADNI GO & 2 APOE Genotypes	-4	Genotype - Allele 2
 
 
 ```{r}
-save.image(file = "20230201_workspace_cleaning_adni.Rdata")
+# save.image(file = "20230201_workspace_cleaning_adni.RData")
 ```
 
 
